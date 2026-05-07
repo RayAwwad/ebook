@@ -70,7 +70,7 @@ export function ResultsContent() {
       </Box>
 
       {/* Chart */}
-      <Card sx={{ border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 20px 60px rgba(0,0,0,0.4)", mb: 4 }}>
+      <Card sx={{ border: "1px solid rgba(0,0,0,0.1)", boxShadow: "0 20px 60px rgba(0,0,0,0.15)", mb: 4 }}>
         <CardContent sx={{ p: 3 }}>
           <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5 }}>Weight Comparison</Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
@@ -103,7 +103,7 @@ function StatCard({ icon, label, value, subtitle, subtitleColor }: {
   icon: React.ReactNode; label: string; value: string; subtitle?: string; subtitleColor?: string
 }) { 
   return (
-    <Card sx={{ border: "1px solid rgba(255,255,255,0.1)" }}>
+    <Card sx={{ border: "1px solid rgba(0,0,0,0.1)" }}>
       <CardContent sx={{ p: 2.5 }}>
         <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}>
           <Box sx={{ p: 1, borderRadius: 1.5, bgcolor: "rgba(33,150,243,0.1)", color: "primary.main", display: "flex" }}>

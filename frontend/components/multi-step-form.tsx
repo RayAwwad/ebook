@@ -125,7 +125,7 @@ export function MultiStepForm() {
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: 14, fontWeight: 600,
                 transition: "all 0.3s",
-                bgcolor: i + 1 < currentStep ? "primary.main" : i + 1 === currentStep ? "rgba(33,150,243,0.15)" : "rgba(255,255,255,0.08)",
+                bgcolor: i + 1 < currentStep ? "primary.main" : i + 1 === currentStep ? "rgba(33,150,243,0.15)" : "rgba(0,0,0,0.05)",
                 border: i + 1 === currentStep ? "2px solid" : "2px solid transparent",
                 borderColor: i + 1 === currentStep ? "primary.main" : "transparent",
                 color: i + 1 < currentStep ? "#fff" : i + 1 === currentStep ? "primary.main" : "text.secondary",
@@ -134,13 +134,13 @@ export function MultiStepForm() {
               {i + 1 < currentStep ? <CheckCircle size={18} /> : i + 1}
             </Box>
             {i < totalSteps - 1 && (
-              <Box sx={{ width: 40, height: 2, mx: 0.5, bgcolor: i + 1 < currentStep ? "primary.main" : "rgba(255,255,255,0.12)", transition: "bgcolor 0.3s" }} />
+              <Box sx={{ width: 40, height: 2, mx: 0.5, bgcolor: i + 1 < currentStep ? "primary.main" : "rgba(0,0,0,0.15)", transition: "bgcolor 0.3s" }} />
             )}
           </Box>
         ))}
       </Box>
 
-      <Card sx={{ border: "1px solid rgba(255,255,255,0.1)", boxShadow: "0 20px 60px rgba(0,0,0,0.4)" }}>
+      <Card sx={{ border: "1px solid rgba(0,0,0,0.1)", boxShadow: "0 20px 60px rgba(0,0,0,0.15)" }}>
         <CardContent sx={{ p: 4 }}>
           {/* Header */}
           <Box sx={{ textAlign: "center", mb: 3 }}>
@@ -180,7 +180,7 @@ export function MultiStepForm() {
               onClick={prevStep}
               disabled={currentStep === 1}
               startIcon={<ArrowLeft size={16} />}
-              sx={{ borderColor: "rgba(255,255,255,0.2)", color: "text.primary", "&:hover": { borderColor: "rgba(255,255,255,0.4)" } }}
+              sx={{ borderColor: "rgba(0,0,0,0.23)", color: "text.primary", "&:hover": { borderColor: "rgba(0,0,0,0.5)" } }}
             >
               Back
             </Button>
@@ -258,14 +258,14 @@ function StepTwo({ unitSystem, setUnitSystem }: { unitSystem: UnitSystem; setUni
     bgcolor: active ? "primary.main" : "transparent",
     color: active ? "#fff" : "text.secondary",
     transition: "all 0.2s",
-    "&:hover": { bgcolor: active ? "primary.main" : "rgba(255,255,255,0.06)" },
+    "&:hover": { bgcolor: active ? "primary.main" : "rgba(0,0,0,0.06)" },
   })
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
       {/* Unit toggle */}
       <Box sx={{ display: "flex", justifyContent: "center" }}>
-        <Box sx={{ display: "flex", borderRadius: 1.5, border: "1px solid rgba(255,255,255,0.15)", overflow: "hidden" }}>
+        <Box sx={{ display: "flex", borderRadius: 1.5, border: "1px solid rgba(0,0,0,0.2)", overflow: "hidden" }}>
           <Box component="button" type="button" onClick={() => handleUnitToggle("metric")} sx={toggleBtnSx(unitSystem === "metric")}>
             Metric (cm / kg)
           </Box>
@@ -277,20 +277,37 @@ function StepTwo({ unitSystem, setUnitSystem }: { unitSystem: UnitSystem; setUni
 
       <TextField label="Age" type="number" placeholder="25" value={userData.age ?? ""}
         onChange={(e) => updateUserData({ age: e.target.value ? Number(e.target.value) : null })}
-        fullWidth inputProps={{ min: 1 }} />
+        fullWidth slotProps={{
+          htmlInput: {
+            min: 1,
+          },
+        }} />
 
       {unitSystem === "metric" ? (
         <TextField label="Height (cm)" type="number" placeholder="175" value={userData.height ?? ""}
           onChange={(e) => updateUserData({ height: e.target.value ? Number(e.target.value) : null })}
-          fullWidth inputProps={{ min: 1 }} />
+          fullWidth slotProps={{
+            htmlInput: {
+              min: 1,
+            },
+          }} />
       ) : (
         <Box>
           <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: "block" }}>Height</Typography>
           <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1.5 }}>
             <TextField label="Feet" type="number" placeholder="5" value={feet}
-              onChange={(e) => handleUsHeightChange(e.target.value, inches)} inputProps={{ min: 0 }} />
+              onChange={(e) => handleUsHeightChange(e.target.value, inches)} slotProps={{
+                htmlInput: {
+                  min: 0,
+                },
+              }} />
             <TextField label="Inches" type="number" placeholder="10" value={inches}
-              onChange={(e) => handleUsHeightChange(feet, e.target.value)} inputProps={{ min: 0, max: 11 }} />
+              onChange={(e) => handleUsHeightChange(feet, e.target.value)} slotProps={{
+              htmlInput: {
+                min: 0,
+                max: 11,
+              },
+              }} />
           </Box>
         </Box>
       )}
@@ -298,10 +315,18 @@ function StepTwo({ unitSystem, setUnitSystem }: { unitSystem: UnitSystem; setUni
       {unitSystem === "metric" ? (
         <TextField label="Weight (kg)" type="number" placeholder="70" value={userData.weight ?? ""}
           onChange={(e) => updateUserData({ weight: e.target.value ? Number(e.target.value) : null })}
-          fullWidth inputProps={{ min: 1 }} />
+          fullWidth slotProps={{
+            htmlInput: {
+              min: 1,
+            },
+          }} />
       ) : (
         <TextField label="Weight (lbs)" type="number" placeholder="154" value={lbs}
-          onChange={(e) => handleUsWeightChange(e.target.value)} fullWidth inputProps={{ min: 1 }} />
+          onChange={(e) => handleUsWeightChange(e.target.value)} fullWidth slotProps={{
+          htmlInput: {
+            min: 1,
+          },
+        }} />
       )}
 
       <Box>
@@ -315,8 +340,8 @@ function StepTwo({ unitSystem, setUnitSystem }: { unitSystem: UnitSystem; setUni
               onClick={() => updateUserData({ gender: opt.value })}
               sx={{
                 height: 48, borderRadius: 1.5, border: "1px solid",
-                borderColor: userData.gender === opt.value ? "primary.main" : "rgba(255,255,255,0.15)",
-                bgcolor: userData.gender === opt.value ? "rgba(33,150,243,0.15)" : "rgba(255,255,255,0.04)",
+                borderColor: userData.gender === opt.value ? "primary.main" : "rgba(0,0,0,0.2)",
+                bgcolor: userData.gender === opt.value ? "rgba(33,150,243,0.15)" : "rgba(0,0,0,0.04)",
                 color: userData.gender === opt.value ? "primary.main" : "text.primary",
                 fontWeight: 500, fontSize: 14, cursor: "pointer",
                 transition: "all 0.2s",
@@ -350,8 +375,8 @@ function StepThree() {
           onClick={() => updateUserData({ activityLevel: level.value })}
           sx={{
             p: 2, borderRadius: 2, border: "1px solid", textAlign: "left", cursor: "pointer",
-            borderColor: userData.activityLevel === level.value ? "primary.main" : "rgba(255,255,255,0.12)",
-            bgcolor: userData.activityLevel === level.value ? "rgba(33,150,243,0.1)" : "rgba(255,255,255,0.03)",
+            borderColor: userData.activityLevel === level.value ? "primary.main" : "rgba(0,0,0,0.15)",
+            bgcolor: userData.activityLevel === level.value ? "rgba(33,150,243,0.1)" : "rgba(0,0,0,0.02)",
             transition: "all 0.2s",
             "&:hover": { borderColor: "rgba(33,150,243,0.5)", bgcolor: "rgba(33,150,243,0.06)" },
           }}
@@ -383,8 +408,8 @@ function StepFour() {
           onClick={() => updateUserData({ activityType: type.value })}
           sx={{
             p: 2, borderRadius: 2, border: "1px solid", textAlign: "left", cursor: "pointer",
-            borderColor: userData.activityType === type.value ? "primary.main" : "rgba(255,255,255,0.12)",
-            bgcolor: userData.activityType === type.value ? "rgba(33,150,243,0.1)" : "rgba(255,255,255,0.03)",
+            borderColor: userData.activityType === type.value ? "primary.main" : "rgba(0,0,0,0.15)",
+            bgcolor: userData.activityType === type.value ? "rgba(33,150,243,0.1)" : "rgba(0,0,0,0.02)",
             transition: "all 0.2s",
             "&:hover": { borderColor: "rgba(33,150,243,0.5)", bgcolor: "rgba(33,150,243,0.06)" },
           }}
