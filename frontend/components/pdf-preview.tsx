@@ -128,7 +128,7 @@ export function PdfPreview({
               Get your detailed fitness analysis and personalized recommendations
             </Typography>
             <Button variant="contained" startIcon={<FileText size={16} />} onClick={onGeneratePdf}>
-              Generate PDF — $4.99
+              Generate PDF — $29.99
             </Button>
           </Box>
         </Box>
