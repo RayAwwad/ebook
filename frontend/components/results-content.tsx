@@ -101,7 +101,7 @@ export function ResultsContent() {
 
 function StatCard({ icon, label, value, subtitle, subtitleColor }: {
   icon: React.ReactNode; label: string; value: string; subtitle?: string; subtitleColor?: string
-}) {
+}) { 
   return (
     <Card sx={{ border: "1px solid rgba(255,255,255,0.1)" }}>
       <CardContent sx={{ p: 2.5 }}>
