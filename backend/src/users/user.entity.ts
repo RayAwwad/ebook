@@ -11,7 +11,7 @@ export enum ActivityLevel {
   LIGHT = 'light',
   MODERATE = 'moderate',
   ACTIVE = 'active',
-  VERY_ACTIVE = 'very-active',
+  VERY_ACTIVE = 'very active',
 }
 
 export enum ActivityType {

@@ -79,3 +79,75 @@ export function getIdealWeightRange(heightCm: number, gender: Gender): { min: nu
     max: Math.round(maxBMI * heightM * heightM * 10) / 10,
   }
 }
+
+// Activity Factors
+export const ActivityFactors: Record<string, number> = {
+  sedentary: 1.2,
+  light: 1.375,
+  moderate: 1.55,
+  active: 1.725,
+  'very active': 1.9,
+}
+
+// Training Type Modifiers
+export const TrainingModifiers: Record<string, [number, number]> = {
+  cardio: [1.00, 1.05],
+  strength: [1.05, 1.15],
+  flexibility: [0.95, 1.00],
+  mixed: [1.10, 1.20],
+  sports: [1.10, 1.25],
+}
+
+// Calculate BMR
+export function calculateBMR({
+  weight,
+  height,
+  age,
+  gender,
+  unitSystem = 'metric',
+}: {
+  weight: number
+  height: number
+  age: number
+  gender: Gender
+  unitSystem?: 'metric' | 'us'
+}): number {
+  if (unitSystem === 'metric') {
+    // Mifflin-St Jeor (recommended)
+    if (gender === 'male') {
+      return Math.round(10 * weight + 6.25 * height - 5 * age + 5)
+    } else if (gender === 'female') {
+      return Math.round(10 * weight + 6.25 * height - 5 * age - 161)
+    } else {
+      // Average of male/female
+      return Math.round(10 * weight + 6.25 * height - 5 * age - 78)
+    }
+  } else {
+    // US system
+    if (gender === 'male') {
+      return Math.round(4.536 * weight + 15.88 * height - 5 * age + 5)
+    } else if (gender === 'female') {
+      return Math.round(4.536 * weight + 15.88 * height - 5 * age - 161)
+    } else {
+      return Math.round(4.536 * weight + 15.88 * height - 5 * age - 78)
+    }
+  }
+}
+
+// Calculate TDEE
+export function calculateTDEE({
+  bmr,
+  activityLevel,
+  activityType,
+  trainingModifierValue,
+}: {
+  bmr: number
+  activityLevel: keyof typeof ActivityFactors
+  activityType: keyof typeof TrainingModifiers
+  trainingModifierValue?: number // If not provided, use average of range
+}): number {
+  const af = ActivityFactors[activityLevel] || 1.2
+  const tmRange = TrainingModifiers[activityType] || [1, 1]
+  const tm = trainingModifierValue ?? ((tmRange[0] + tmRange[1]) / 2)
+  return Math.round(bmr * af * tm)
+}

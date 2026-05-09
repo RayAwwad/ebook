@@ -10,14 +10,18 @@ import Box from "@mui/material/Box"
 import Card from "@mui/material/Card"
 import CardContent from "@mui/material/CardContent"
 import Typography from "@mui/material/Typography"
-import { getAverageWeightData, calculateBMI, getBMICategory, getIdealWeightRange } from "@/lib/weight-data"
+import { getAverageWeightData, calculateBMI, getBMICategory, getIdealWeightRange, calculateBMR, calculateTDEE, ActivityFactors, TrainingModifiers } from "@/lib/weight-data"
 import { Activity, TrendingUp, Scale, Target, Home } from "lucide-react"
 import type { Gender } from "@/lib/fitness-context"
+import dynamic from "next/dynamic"
 
 export function ResultsContent() {
   const searchParams = useSearchParams()
   const [isPdfUnlocked, setIsPdfUnlocked] = useState(false)
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
+
+const TDEEChart = dynamic(() => import("./tdee-chart-client"), { ssr: false })
+
 
   const userData = useMemo(() => ({
     firstName: searchParams.get("firstName") || "",
@@ -30,10 +34,44 @@ export function ResultsContent() {
     activityType: searchParams.get("activityType") || "mixed",
   }), [searchParams])
 
+
   const chartData = useMemo(() => getAverageWeightData(userData.age, userData.height, userData.weight, userData.gender), [userData])
   const bmi = calculateBMI(userData.weight, userData.height)
   const bmiInfo = getBMICategory(bmi)
   const idealRange = getIdealWeightRange(userData.height, userData.gender)
+
+  // Calculate BMR (metric only for now)
+  const bmr = calculateBMR({
+    weight: userData.weight,
+    height: userData.height,
+    age: userData.age,
+    gender: userData.gender,
+    unitSystem: 'metric',
+  })
+
+  // Calculate TDEE (apply TM only if not sedentary)
+  let tm = 1.0
+  if (userData.activityLevel !== 'sedentary') {
+    const tmRange = TrainingModifiers[userData.activityType] || [1, 1]
+    tm = (tmRange[0] + tmRange[1]) / 2
+  }
+  const tdee = calculateTDEE({
+    bmr,
+    activityLevel: userData.activityLevel,
+    activityType: userData.activityType,
+    trainingModifierValue: tm,
+  })
+
+  // Prepare BMR/TDEE chart data for common activity levels
+  const tdeeChartData = Object.entries(ActivityFactors).map(([level, af]) => {
+    let chartTM = 1.0
+    if (level !== 'sedentary') {
+      const tmRange = TrainingModifiers[userData.activityType] || [1, 1]
+      chartTM = (tmRange[0] + tmRange[1]) / 2
+    }
+    const tdeeVal = Math.round(bmr * af * chartTM)
+    return { level, tdee: tdeeVal }
+  })
 
   return (
     <Box sx={{ width: "100%", maxWidth: 900 }}>
@@ -69,6 +107,7 @@ export function ResultsContent() {
         <StatCard icon={<Activity size={20} />} label="Activity" value={userData.activityLevel.replace("-", " ")} />
       </Box>
 
+
       {/* Chart */}
       <Card sx={{ border: "1px solid rgba(0,0,0,0.1)", boxShadow: "0 20px 60px rgba(0,0,0,0.15)", mb: 4 }}>
         <CardContent sx={{ p: 3 }}>
@@ -80,7 +119,32 @@ export function ResultsContent() {
         </CardContent>
       </Card>
 
+      {/* BMR/TDEE Stats and Chart */}
+      <Card sx={{ border: "1px solid rgba(0,0,0,0.1)", boxShadow: "0 20px 60px rgba(0,0,0,0.10)", mb: 4 }}>
+        <CardContent sx={{ p: 3 }}>
+          <Typography variant="h6" sx={{ fontWeight: 700, mb: 0.5 }}>BMR & TDEE</Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Your Basal Metabolic Rate (BMR) and Total Daily Energy Expenditure (TDEE) based on your profile and activity
+          </Typography>
+          <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap', mb: 2 }}>
+            <Box>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>BMR</Typography>
+              <Typography variant="h5" color="primary" sx={{ fontWeight: 700 }}>{bmr} kcal/day</Typography>
+            </Box>
+            <Box>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>TDEE</Typography>
+              <Typography variant="h5" color="secondary" sx={{ fontWeight: 700 }}>{tdee} kcal/day</Typography>
+            </Box>
+          </Box>
+          <Box sx={{ width: '100%', height: 260 }}>
+            {/* Simple bar chart for TDEE by activity level */}
+            <TDEEChart data={tdeeChartData} userLevel={userData.activityLevel} />
+          </Box>
+        </CardContent>
+      </Card>
+
       {/* PDF */}
+
       <PdfPreview
         isUnlocked={isPdfUnlocked}
         userData={userData}
@@ -88,6 +152,8 @@ export function ResultsContent() {
         bmi={bmi}
         bmiCategory={bmiInfo.category}
         idealRange={idealRange}
+        bmr={bmr}
+        tdee={tdee}
       />
 
       <PaymentModal

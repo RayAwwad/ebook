@@ -137,7 +137,7 @@ export function LandingHero() {
             <Activity size={22} color="#fff" />
           </Box>
           <Typography variant="h6" sx={{ color: "#fff", fontWeight: 600, letterSpacing: "-0.02em" }}>
-            ebook
+            Ebook
           </Typography>
         </Box>
 

@@ -258,7 +258,7 @@ function StepTwo({ unitSystem, setUnitSystem }: { unitSystem: UnitSystem; setUni
     bgcolor: active ? "primary.main" : "transparent",
     color: active ? "#fff" : "text.secondary",
     transition: "all 0.2s",
-    "&:hover": { bgcolor: active ? "primary.main" : "rgba(0,0,0,0.06)" },
+    "&:hover": { bgcolor: active ? "primary.main" : "rgba(119, 90, 90, 0.06)" },
   })
 
   return (
@@ -363,7 +363,7 @@ function StepThree() {
     { value: "light", label: "Lightly Active", description: "Light exercise 1-3 days/week" },
     { value: "moderate", label: "Moderately Active", description: "Moderate exercise 3-5 days/week" },
     { value: "active", label: "Active", description: "Hard exercise 6-7 days/week" },
-    { value: "very-active", label: "Very Active", description: "Very hard exercise daily" },
+    { value: "very active", label: "Very Active", description: "Very hard exercise daily" },
   ]
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>

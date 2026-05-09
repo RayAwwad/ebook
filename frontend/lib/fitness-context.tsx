@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useCallback, ReactNode } from "react"
 
 export type Gender = "male" | "female" | "other"
-export type ActivityLevel = "sedentary" | "light" | "moderate" | "active" | "very-active"
+export type ActivityLevel = "sedentary" | "light" | "moderate" | "active" | "very active"
 export type ActivityType = "cardio" | "strength" | "flexibility" | "mixed" | "sports"
 
 export interface UserData {

@@ -25,7 +25,7 @@ export function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) 
     cvc: "",
     name: "",
   })
-
+const [test, setTest] = useState(false)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsProcessing(true)
